@@ -29,3 +29,6 @@ dist-ssr
 # JSON backup files
 # *.json
 
+# Cursor conversation files
+cursor_*.md
+
