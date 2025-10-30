@@ -1,5 +1,4 @@
 import { useState, useMemo } from 'react'
-import { ArrowLeft, TrendingUp, TrendingDown, Wallet, Filter } from 'lucide-react'
 import { format } from 'date-fns'
 import SummaryCards from './SummaryCards'
 import FilterBar from './FilterBar'
@@ -47,30 +46,6 @@ function Dashboard({ data, onReset }) {
 
   return (
     <div className="space-y-6">
-      {/* Header with Reset Button */}
-      <div className="bg-white rounded-xl shadow-lg p-6 flex items-center justify-between hover-lift relative overflow-hidden group">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-purple-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-        <div className="flex items-center gap-4 relative z-10">
-          <button
-            onClick={onReset}
-            className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-all duration-300 hover:scale-105 hover:-translate-x-1"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            Upload New File
-          </button>
-          <div className="h-6 w-px bg-gradient-to-b from-transparent via-gray-300 to-transparent"></div>
-          <div>
-            <h2 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-gray-800 via-blue-600 to-purple-600">
-              Financial Dashboard
-            </h2>
-            <p className="text-sm text-gray-500 flex items-center gap-2">
-              <span className="inline-block w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-              {filteredData.transactions.length} transactions
-            </p>
-          </div>
-        </div>
-      </div>
-
       {/* Filter Bar */}
       <FilterBar
         years={data.years}

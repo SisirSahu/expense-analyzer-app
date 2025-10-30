@@ -32,3 +32,8 @@ dist-ssr
 # Cursor conversation files
 cursor_*.md
 
+# Environment variables
+.env
+.env.local
+.env.production
+

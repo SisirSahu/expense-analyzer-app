@@ -1,36 +1,51 @@
 import { useState } from 'react'
-import FileUpload from './components/FileUpload'
-import Dashboard from './components/Dashboard'
-import { Upload } from 'lucide-react'
+import { useAuth } from './context/AuthContext'
+import Login from './components/Auth/Login'
+import Signup from './components/Auth/Signup'
+import ForgotPassword from './components/Auth/ForgotPassword'
+import Header from './components/Header'
+import TransactionManager from './components/TransactionManager'
+import AnalyticsDashboard from './components/AnalyticsDashboard'
+import CSVImport from './components/CSVImport'
 
 function App() {
-  const [data, setData] = useState(null)
+  const { user, loading } = useAuth()
+  const [authView, setAuthView] = useState('login') // login, signup, forgot
+  const [currentView, setCurrentView] = useState('transactions') // transactions, analytics, import
 
-  return (
-    <div className="min-h-screen p-4 md:p-8">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <header className="text-center mb-8 animate-fade-in">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-2 flex items-center justify-center gap-3 drop-shadow-lg">
-            <Upload className="w-10 h-10 animate-bounce" />
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-white via-blue-100 to-white animate-shimmer">
-              Expense Analyzer
-            </span>
-          </h1>
-          <p className="text-white/90 text-lg drop-shadow-md">
-            Upload your CSV and get complete financial insights
-          </p>
-        </header>
-
-        {/* Main Content */}
-        <div className="animate-slide-up">
-          {!data ? (
-            <FileUpload onDataLoaded={setData} />
-          ) : (
-            <Dashboard data={data} onReset={() => setData(null)} />
-          )}
+  // Show loading state while checking auth
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 via-purple-600 to-pink-500">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-white border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-white text-lg font-medium">Loading...</p>
         </div>
       </div>
+    )
+  }
+
+  // Show auth views if not logged in
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-500 via-purple-600 to-pink-500">
+        {authView === 'login' && <Login onToggleView={setAuthView} />}
+        {authView === 'signup' && <Signup onToggleView={setAuthView} />}
+        {authView === 'forgot' && <ForgotPassword onToggleView={setAuthView} />}
+      </div>
+    )
+  }
+
+  // Show main app if logged in
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+      <Header currentView={currentView} onViewChange={setCurrentView} />
+      
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {currentView === 'transactions' && <TransactionManager />}
+        {currentView === 'analytics' && <AnalyticsDashboard />}
+        {currentView === 'import' && <CSVImport />}
+      </main>
     </div>
   )
 }
