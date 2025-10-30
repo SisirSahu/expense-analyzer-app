@@ -29,7 +29,8 @@ export const authService = {
         options: {
           data: {
             username: username || email.split('@')[0]
-          }
+          },
+          emailRedirectTo: `${window.location.origin}${import.meta.env.BASE_URL}`
         }
       })
 
@@ -103,7 +104,7 @@ export const authService = {
   async resetPassword(email) {
     try {
       const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/reset-password`
+        redirectTo: `${window.location.origin}${import.meta.env.BASE_URL}`
       })
 
       if (error) throw error
