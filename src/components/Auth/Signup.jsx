@@ -49,16 +49,16 @@ function Signup({ onToggleView }) {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 p-4">
       <div className="max-w-md w-full">
         <div className="bg-white rounded-2xl shadow-2xl p-8 space-y-6">
           {/* Header */}
           <div className="text-center">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-green-500 to-blue-600 rounded-full mb-4">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-green-500 to-blue-600 rounded-full mb-4 shadow-lg">
               <UserPlus className="w-8 h-8 text-white" />
             </div>
             <h2 className="text-3xl font-bold text-gray-900">Create Account</h2>
-            <p className="text-gray-600 mt-2">Join us to manage your expenses</p>
+            <p className="text-gray-600 mt-2">Join us to start managing your expenses</p>
           </div>
 
           {/* Form */}
@@ -189,10 +189,17 @@ function Signup({ onToggleView }) {
               Already have an account?{' '}
               <button
                 onClick={() => onToggleView('login')}
-                className="text-blue-600 hover:text-blue-700 font-semibold"
+                className="text-blue-600 hover:text-blue-700 font-semibold hover:underline"
               >
                 Sign in
               </button>
+            </p>
+          </div>
+
+          {/* Info Note */}
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <p className="text-xs text-blue-800 text-center">
+              🔒 Your data is encrypted and secure. We'll never share your information.
             </p>
           </div>
         </div>

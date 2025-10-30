@@ -26,22 +26,30 @@ function ForgotPassword({ onToggleView }) {
 
   if (emailSent) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 p-4">
         <div className="max-w-md w-full">
           <div className="bg-white rounded-2xl shadow-2xl p-8 space-y-6 text-center">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
-              <CheckCircle className="w-8 h-8 text-green-600" />
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-green-100 rounded-full mb-4 shadow-lg">
+              <CheckCircle className="w-12 h-12 text-green-600" />
             </div>
-            <h2 className="text-3xl font-bold text-gray-900">Check Your Email</h2>
+            <h2 className="text-3xl font-bold text-gray-900">Check Your Email! 📧</h2>
             <p className="text-gray-600">
-              We've sent password reset instructions to <strong>{email}</strong>
+              We've sent password reset instructions to
             </p>
-            <p className="text-sm text-gray-500">
-              Didn't receive the email? Check your spam folder or try again.
+            <p className="text-lg font-semibold text-blue-600 bg-blue-50 py-2 px-4 rounded-lg">
+              {email}
             </p>
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 space-y-2">
+              <p className="text-sm text-yellow-800 font-medium">
+                📌 Didn't receive the email?
+              </p>
+              <p className="text-xs text-yellow-700">
+                Check your spam folder or try requesting again in a few minutes.
+              </p>
+            </div>
             <button
               onClick={() => onToggleView('login')}
-              className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 rounded-lg font-semibold hover:from-blue-600 hover:to-purple-700 transition-all flex items-center justify-center gap-2"
+              className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 rounded-lg font-semibold hover:from-blue-600 hover:to-purple-700 transition-all shadow-lg flex items-center justify-center gap-2"
             >
               <ArrowLeft className="w-5 h-5" />
               Back to Login
@@ -53,12 +61,12 @@ function ForgotPassword({ onToggleView }) {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 p-4">
       <div className="max-w-md w-full">
         <div className="bg-white rounded-2xl shadow-2xl p-8 space-y-6">
           {/* Header */}
           <div className="text-center">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-orange-500 to-red-600 rounded-full mb-4">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-orange-500 to-red-600 rounded-full mb-4 shadow-lg">
               <Mail className="w-8 h-8 text-white" />
             </div>
             <h2 className="text-3xl font-bold text-gray-900">Forgot Password?</h2>
