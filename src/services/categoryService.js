@@ -1,5 +1,24 @@
 import { supabase } from '../utils/supabase'
 
+// Default categories to create for new users
+const DEFAULT_CATEGORIES = [
+  // Income categories
+  { name: 'Salary', type: 'income', is_default: true },
+  { name: 'Freelance', type: 'income', is_default: true },
+  { name: 'Investment', type: 'income', is_default: true },
+  { name: 'Gift', type: 'income', is_default: true },
+  { name: 'Other Income', type: 'income', is_default: true },
+  // Expense categories
+  { name: 'Food', type: 'expense', is_default: true },
+  { name: 'Transport', type: 'expense', is_default: true },
+  { name: 'Shopping', type: 'expense', is_default: true },
+  { name: 'Bills', type: 'expense', is_default: true },
+  { name: 'Entertainment', type: 'expense', is_default: true },
+  { name: 'Healthcare', type: 'expense', is_default: true },
+  { name: 'Education', type: 'expense', is_default: true },
+  { name: 'Other Expense', type: 'expense', is_default: true },
+]
+
 export const categoryService = {
   // Get all categories for current user
   async getCategories() {
@@ -11,6 +30,21 @@ export const categoryService = {
         .order('name', { ascending: true })
 
       if (error) throw error
+      
+      // If no categories exist, initialize default categories
+      if (!data || data.length === 0) {
+        await this.initializeDefaultCategories()
+        // Fetch again after initialization
+        const { data: newData, error: newError } = await supabase
+          .from('categories')
+          .select('*')
+          .order('is_default', { ascending: false })
+          .order('name', { ascending: true })
+        
+        if (newError) throw newError
+        return { data: newData, error: null }
+      }
+      
       return { data, error: null }
     } catch (error) {
       console.error('Get categories error:', error)
@@ -93,6 +127,30 @@ export const categoryService = {
       return { error: null }
     } catch (error) {
       console.error('Delete category error:', error)
+      return { error }
+    }
+  },
+
+  // Initialize default categories for new user
+  async initializeDefaultCategories() {
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      
+      if (!user) throw new Error('User not authenticated')
+
+      const categoriesWithUserId = DEFAULT_CATEGORIES.map(cat => ({
+        ...cat,
+        user_id: user.id
+      }))
+
+      const { error } = await supabase
+        .from('categories')
+        .insert(categoriesWithUserId)
+
+      if (error) throw error
+      return { error: null }
+    } catch (error) {
+      console.error('Initialize categories error:', error)
       return { error }
     }
   }
