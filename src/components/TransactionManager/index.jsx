@@ -5,6 +5,7 @@ import QuickStats from './QuickStats'
 import TransactionForm from './TransactionForm'
 import TransactionListView from './TransactionListView'
 import CategoryManager from './CategoryManager'
+import DeleteProgressModal from './DeleteProgressModal'
 import { transactionService } from '../../services/transactionService'
 import { categoryService } from '../../services/categoryService'
 import { exportService } from '../../services/exportService'
@@ -18,6 +19,15 @@ function TransactionManager() {
   const [showCategoryManager, setShowCategoryManager] = useState(false)
   const [editingTransaction, setEditingTransaction] = useState(null)
   const [showExportMenu, setShowExportMenu] = useState(false)
+  
+  // Delete progress state
+  const [deleteProgress, setDeleteProgress] = useState({
+    isOpen: false,
+    total: 0,
+    deleted: 0,
+    failed: 0,
+    isComplete: false
+  })
 
   useEffect(() => {
     loadData()
@@ -159,27 +169,56 @@ function TransactionManager() {
       return
     }
 
-    setLoading(true)
-    let deletedCount = 0
-    let failedCount = 0
+    // Initialize progress modal
+    setDeleteProgress({
+      isOpen: true,
+      total: transactions.length,
+      deleted: 0,
+      failed: 0,
+      isComplete: false
+    })
 
-    // Delete all transactions
-    for (const transaction of transactions) {
-      const { error } = await transactionService.deleteTransaction(transaction.id)
-      if (error) {
-        failedCount++
-      } else {
-        deletedCount++
+    // Get all transaction IDs
+    const transactionIds = transactions.map(t => t.id)
+
+    // Delete with progress updates
+    const result = await transactionService.bulkDeleteTransactions(
+      transactionIds,
+      (progress) => {
+        // Update progress modal in real-time
+        setDeleteProgress(prev => ({
+          ...prev,
+          deleted: progress.deleted,
+          failed: progress.failed
+        }))
       }
-    }
+    )
 
-    if (deletedCount > 0) {
-      toast.success(`Deleted ${deletedCount} transaction(s)`)
-    }
-    if (failedCount > 0) {
-      toast.error(`Failed to delete ${failedCount} transaction(s)`)
-    }
+    // Mark as complete
+    setDeleteProgress(prev => ({
+      ...prev,
+      isComplete: true
+    }))
 
+    // Show final toast
+    if (result.deleted > 0) {
+      toast.success(`Successfully deleted ${result.deleted} transaction(s)`)
+    }
+    if (result.failed > 0) {
+      toast.error(`Failed to delete ${result.failed} transaction(s)`)
+    }
+  }
+
+  const handleCloseDeleteProgress = () => {
+    setDeleteProgress({
+      isOpen: false,
+      total: 0,
+      deleted: 0,
+      failed: 0,
+      isComplete: false
+    })
+    
+    // Reload data after closing
     loadData()
   }
 
@@ -293,6 +332,16 @@ function TransactionManager() {
           onUpdate={handleCategoriesUpdated}
         />
       )}
+
+      {/* Delete Progress Modal */}
+      <DeleteProgressModal
+        isOpen={deleteProgress.isOpen}
+        total={deleteProgress.total}
+        deleted={deleteProgress.deleted}
+        failed={deleteProgress.failed}
+        isComplete={deleteProgress.isComplete}
+        onClose={handleCloseDeleteProgress}
+      />
     </div>
   )
 }

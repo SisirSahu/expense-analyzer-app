@@ -140,6 +140,55 @@ export const transactionService = {
     }
   },
 
+  // Bulk delete transactions with progress callback
+  async bulkDeleteTransactions(transactionIds, onProgress) {
+    let deleted = 0
+    let failed = 0
+    const total = transactionIds.length
+
+    try {
+      for (const id of transactionIds) {
+        const { error } = await this.deleteTransaction(id)
+        
+        if (error) {
+          failed++
+        } else {
+          deleted++
+        }
+
+        // Call progress callback after each deletion
+        if (onProgress) {
+          onProgress({
+            total,
+            deleted,
+            failed,
+            remaining: total - deleted - failed
+          })
+        }
+
+        // Small delay to prevent overwhelming the server
+        await new Promise(resolve => setTimeout(resolve, 50))
+      }
+
+      return { 
+        success: true, 
+        deleted, 
+        failed, 
+        total,
+        error: null 
+      }
+    } catch (error) {
+      console.error('Bulk delete error:', error)
+      return { 
+        success: false, 
+        deleted, 
+        failed, 
+        total,
+        error 
+      }
+    }
+  },
+
   // Get transaction statistics
   async getStats(filters = {}) {
     try {
